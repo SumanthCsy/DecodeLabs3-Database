@@ -39,7 +39,7 @@
                 <span class="status-dot" id="status-dot"></span>
                 <span id="status-label">Connecting...</span>
             </div>
-            <p class="api-url">http://localhost:3000</p>
+            <p class="api-url" id="sidebar-api-url">http://localhost:3000</p>
         </div>
     </aside>
 
@@ -185,7 +185,7 @@
                 <div class="card-header">
                     <div>
                         <h3>Live API Response</h3>
-                        <p class="card-sub">GET http://localhost:3000/students</p>
+                        <p class="card-sub" id="json-card-sub">GET http://localhost:3000/students</p>
                     </div>
                     <div class="card-header-actions">
                         <button class="btn btn-outline btn-sm" id="refresh-json-btn">⟳ Refresh</button>
@@ -210,7 +210,7 @@
                 <div class="endpoint-tester">
                     <div class="tester-row">
                         <span class="json-badge json-badge--get">GET</span>
-                        <span class="tester-base">http://localhost:3000/students/</span>
+                        <span class="tester-base" id="tester-base-url">http://localhost:3000/students/</span>
                         <input type="number" id="test-id-input" placeholder="id" min="1" class="tester-id-input">
                         <button class="btn btn-primary btn-sm" id="test-fetch-btn">Fetch</button>
                     </div>
@@ -234,6 +234,7 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

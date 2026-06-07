@@ -3,3 +3,5 @@ backend/database/*.db
 backend/database/students.db
 .DS_Store
 *.log
+frontend/config.js
+frontend/config.js.bak

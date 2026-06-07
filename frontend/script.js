@@ -1,8 +1,7 @@
 // frontend/script.js
 // Complete client-side logic for Student Management Dashboard
-// Connects to backend REST API at http://localhost:3000
-
-const API = 'http://localhost:3000/students';
+// Connects to backend REST API (configured in config.js)
+const API = (typeof CONFIG !== 'undefined' && CONFIG.API_URL) ? CONFIG.API_URL : 'http://localhost:3000/students';
 
 // ─── State ────────────────────────────────────────────────
 let allStudents  = [];   // full list cached from API
@@ -213,7 +212,7 @@ async function refreshJsonViewer() {
         jsonStatus.textContent = `${res.status} OK`;
         jsonStatus.className   = 'json-status ok';
     } catch {
-        jsonOutput.textContent = '// Error: Could not reach backend at http://localhost:3000';
+        jsonOutput.textContent = `// Error: Could not reach backend at ${API.replace('/students', '')}`;
         jsonStatus.textContent = 'Error';
         jsonStatus.className   = 'json-status err';
     }
@@ -470,6 +469,17 @@ function formatDate(dateStr) {
 
 // ─── Init ─────────────────────────────────────────────────
 (async function init() {
+    // Dynamically update URLs in the UI based on config.js API URL
+    const baseUrl = API.replace('/students', '');
+    const sidebarApiUrl = document.getElementById('sidebar-api-url');
+    if (sidebarApiUrl) sidebarApiUrl.textContent = baseUrl;
+
+    const jsonCardSub = document.getElementById('json-card-sub');
+    if (jsonCardSub) jsonCardSub.textContent = `GET ${API}`;
+
+    const testerBaseUrl = document.getElementById('tester-base-url');
+    if (testerBaseUrl) testerBaseUrl.textContent = `${API}/`;
+
     showSection('dashboard-section');
     await loadStudents();
 })();
