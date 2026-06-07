@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System – DecodeLabs</title>
+    <meta name="description" content="Full Stack Student Management Dashboard with SQLite CRUD and Live JSON Viewer">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">🎓</div>
+            <div class="logo-text">
+                <h2>DecodeLabs</h2>
+                <span>Task 3 – Week 3</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard-section" class="nav-item active" id="nav-dashboard">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="#students-section" class="nav-item" id="nav-students">
+                <span class="nav-icon">👥</span>
+                <span>Students</span>
+            </a>
+            <a href="#json-section" class="nav-item" id="nav-json">
+                <span class="nav-icon">🔌</span>
+                <span>API / JSON</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="api-status">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="status-label">Connecting...</span>
+            </div>
+            <p class="api-url">http://localhost:3000</p>
+        </div>
+    </aside>
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <div class="main-wrapper">
+
+        <!-- Top Header -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <h1 id="page-title">Dashboard</h1>
+                <p id="page-subtitle">Overview of your student database</p>
+            </div>
+            <div class="topbar-right">
+                <button class="btn btn-primary" id="open-add-form-btn">+ Add Student</button>
+            </div>
+        </header>
+
+        <!-- ========== SECTION: Dashboard Stats ========== -->
+        <section id="dashboard-section" class="content-section active">
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-label">Total Students</div>
+                    <div class="stat-value" id="stat-total">0</div>
+                    <div class="stat-icon-bg">👥</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Courses</div>
+                    <div class="stat-value" id="stat-courses">0</div>
+                    <div class="stat-icon-bg">📚</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Last Added</div>
+                    <div class="stat-value stat-value--sm" id="stat-last">–</div>
+                    <div class="stat-icon-bg">🕐</div>
+                </div>
+            </div>
+
+            <!-- Quick preview table on dashboard -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Recent Students</h3>
+                    <a href="#students-section" class="link-btn" id="view-all-btn">View All →</a>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table" id="dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>Added On</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-table-body">
+                            <tr><td colspan="5" class="empty-row">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== SECTION: Students Full CRUD ========== -->
+        <section id="students-section" class="content-section">
+
+            <!-- Add / Edit Form Card -->
+            <div class="card" id="form-card">
+                <div class="card-header">
+                    <h3 id="form-title">Add New Student</h3>
+                    <button class="icon-btn" id="collapse-form-btn" title="Collapse form">▲</button>
+                </div>
+                <div id="form-body">
+                    <form id="student-form" novalidate>
+                        <input type="hidden" id="edit-id">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="f-name">Full Name <span class="req">*</span></label>
+                                <input type="text" id="f-name" placeholder="e.g. Sumanth Csy">
+                                <span class="field-error" id="err-name"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="f-email">Email Address <span class="req">*</span></label>
+                                <input type="email" id="f-email" placeholder="e.g. sumanth@gmail.com">
+                                <span class="field-error" id="err-email"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="f-course">Course <span class="req">*</span></label>
+                                <input type="text" id="f-course" placeholder="e.g. Full Stack Development">
+                                <span class="field-error" id="err-course"></span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="submit-btn">Save Student</button>
+                            <button type="button" class="btn btn-outline" id="cancel-edit-btn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Student Table Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>All Students</h3>
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-input" placeholder="Search by name or email...">
+                    </div>
+                </div>
+
+                <!-- Alert Box for messages -->
+                <div class="alert hidden" id="alert-box">
+                    <span id="alert-text"></span>
+                    <button class="alert-close" id="alert-close-btn">×</button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="data-table" id="student-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>Added On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-table-body">
+                            <tr><td colspan="6" class="empty-row">Loading students...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-footer">
+                    <span id="record-count">0 students found</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== SECTION: JSON / API Viewer ========== -->
+        <section id="json-section" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h3>Live API Response</h3>
+                        <p class="card-sub">GET http://localhost:3000/students</p>
+                    </div>
+                    <div class="card-header-actions">
+                        <button class="btn btn-outline btn-sm" id="refresh-json-btn">⟳ Refresh</button>
+                        <button class="btn btn-outline btn-sm" id="copy-json-btn">📋 Copy</button>
+                    </div>
+                </div>
+                <div class="json-meta">
+                    <span class="json-badge json-badge--get">GET</span>
+                    <span class="json-endpoint">/students</span>
+                    <span class="json-status" id="json-status">–</span>
+                </div>
+                <pre class="json-viewer" id="json-output">// Click Refresh or perform any CRUD operation
+// to see the live JSON response here</pre>
+            </div>
+
+            <!-- Individual endpoint tester -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Test Single Student</h3>
+                    <p class="card-sub">GET /students/:id</p>
+                </div>
+                <div class="endpoint-tester">
+                    <div class="tester-row">
+                        <span class="json-badge json-badge--get">GET</span>
+                        <span class="tester-base">http://localhost:3000/students/</span>
+                        <input type="number" id="test-id-input" placeholder="id" min="1" class="tester-id-input">
+                        <button class="btn btn-primary btn-sm" id="test-fetch-btn">Fetch</button>
+                    </div>
+                </div>
+                <pre class="json-viewer" id="test-json-output">// Enter a student ID and click Fetch</pre>
+            </div>
+        </section>
+
+    </div><!-- end .main-wrapper -->
+
+    <!-- ===================== CONFIRM MODAL ===================== -->
+    <div class="modal-overlay hidden" id="confirm-modal">
+        <div class="modal-box">
+            <div class="modal-icon">⚠️</div>
+            <h3>Confirm Delete</h3>
+            <p>Are you sure you want to delete this student? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn btn-danger" id="confirm-delete-btn">Yes, Delete</button>
+                <button class="btn btn-outline" id="cancel-delete-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

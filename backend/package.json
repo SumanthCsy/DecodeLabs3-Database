@@ -1,0 +1,16 @@
+{
+  "name": "student-management-backend",
+  "version": "1.0.0",
+  "description": "Backend REST API for Student Management System using Node.js, Express.js and SQLite3",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Sumanth Csy",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "sqlite3": "^5.1.7"
+  }
+}
